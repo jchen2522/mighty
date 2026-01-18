@@ -4,7 +4,8 @@
 #include <pybind11/operators.h>
 
 #include "mighty/mighty.hpp"
-#include "mighty/lbfgs_solver.hpp"
+#include "mighty/lbfgs_solver.hpp
+#include "mighty/lbfgs.hpp"
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <geometry_msgs/msg/transform_stamped.hpp>
@@ -45,8 +46,24 @@ PYBIND11_MODULE(py_mighty, m) {
     
 
     // ------------------------------
+    // Bind lbfgs::lbfgs_parameter_t
+    py::class_<lbfgs::lbfgs_parameter_t>(m, "lbfgs_parameter_t")
+        .def(py::init<>())
+        .def_readwrite("mem_size", &lbfgs::lbfgs_parameter_t::mem_size)
+        .def_readwrite("min_step", &lbfgs::lbfgs_parameter_t::min_step)
+        .def_readwrite("f_dec_coeff", &lbfgs::lbfgs_parameter_t::f_dec_coeff)
+        .def_readwrite("cautious_factor", &lbfgs::lbfgs_parameter_t::cautious_factor)
+        .def_readwrite("past", &lbfgs::lbfgs_parameter_t::past)
+        .def_readwrite("max_linesearch", &lbfgs::lbfgs_parameter_t::max_linesearch)
+        .def_readwrite("max_iterations", &lbfgs::lbfgs_parameter_t::max_iterations)
+        .def_readwrite("g_epsilon", &lbfgs::lbfgs_parameter_t::g_epsilon)
+        .def_readwrite("delta", &lbfgs::lbfgs_parameter_t::delta)
+        .def("__repr__", [](const lbfgs::lbfgs_parameter_t &a) { return "<py_mighty.lbfgs_parameter_t>"; });
+
+
+    // ------------------------------
     // Bind lbfgs::planner_params_t
-    py::class <lbfgs::planner_params_t>(m, "planner_params_t")
+    py::class_<lbfgs::planner_params_t>(m, "planner_params_t")
         .def(py::init<>())
         .def_readwrite("verbose", &lbfgs::planner_params_t::verbose)
         .def_readwrite("V_max", &lbfgs::planner_params_t::V_max)
@@ -95,7 +112,20 @@ PYBIND11_MODULE(py_mighty, m) {
         // .def("evaluateObjectiveAndGradientFused", lbfgs::SolverLBFGS::evaluateObjectiveAndGradientFused)
         // .def("evaluateObjectiveAndGradient", lbfgs::SolverLBFGS::evaluateObjectiveAndGradient)
         // .def("progressCallback", lbfgs::SolverLBFGS::progressCallback)
-        .def("optimize", &lbfgs::SolverLBFGS::optimize)
+        .def("optimize",
+        [](const lbfgs::SolverLBFGS &self,
+           const Eigen::VectorXd &z0,
+           const lbfgs::lbfgs_parameter_t &param)
+        {
+            Eigen::VectorXd z_opt;
+            double f_opt = 0.0;
+
+            int status = self.optimize(z0, z_opt, f_opt, param);
+
+            // Return everything Python cares about
+            return py::make_tuple(status, z_opt, f_opt);
+        },
+        py::arg("z0"), py::arg("param"))
         // .def("reconstruct", lbfgs::SolverLBFGS::reconstruct)
         // .def("packDecisionVariables", lbfgs::SolverLBFGS::packDecisionVariables)
         // .def("setStaticConstraints", lbfgs::SolverLBFGS::setStaticConstraints)
@@ -107,6 +137,37 @@ PYBIND11_MODULE(py_mighty, m) {
         .def("getInitialGuesses", &lbfgs::SolverLBFGS::getInitialGuesses)
         .def("getInitialGuessWaypoints", lbfgs::SolverLBFGS::getInitialGuessWaypoints)
         .def("initializeSolver", &lbfgs::SolverLBFGS::initializeSolver)
+        .def("prepareSolverForReplan",
+        [](SolverLBFGS &self,
+            double t0,
+            const std::vector<Eigen::Vector3d> &global_wps,
+            const std::vector<LinearConstraint3D> &safe_corridor,
+            const std::vector<std::shared_ptr<dynTraj>> &obstacles,
+            const state &initial_state,
+            const state &goal_state,
+            bool use_for_safe_path,
+            bool use_multiple_initial_guesses)
+        {
+            double init_time = 0.0;
+            self.prepareSolverForReplan(t0,
+                                        global_wps,
+                                        safe_corridor,
+                                        obstacles,
+                                        initial_state,
+                                        goal_state,
+                                        init_time,
+                                        use_for_safe_path,
+                                        use_multiple_initial_guesses);
+            return init_time;
+        },
+        py::arg("t0"),
+        py::arg("global_wps"),
+        py::arg("safe_corridor"),
+        py::arg("obstacles"),
+        py::arg("initial_state"),
+        py::arg("goal_state"),
+        py::arg("use_for_safe_path") = false,
+        py::arg("use_multiple_initial_guesses") = false)
         .def("__repr__", [](const lbfgs::SolverLBFGS &a) { return "<py_mighty.SolverLBFGS>"; });
 
 

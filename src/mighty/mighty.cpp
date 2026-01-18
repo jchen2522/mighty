@@ -769,7 +769,17 @@ bool MIGHTY::generateLocalTrajectory(const state &local_A, double A_time,
     local_E.pos[2] = 1.0;
   }
 
+  std::cout << "A_time = " << A_time << "\n";
+  std::cout << "global_path.size() = " << global_path.size() << "\n";
+  std::cout << "safe_corridor_polytopes_whole_.size() = " << safe_corridor_polytopes_whole_.size() << "\n";
+  std::cout << "local_trajs.size() = " << local_trajs.size() << "\n";
+
+  std::cout << "local_A.pos = " << local_A.pos.transpose() << "\n";
+  std::cout << "local_E   = " << local_E.pos.transpose() << "\n";
+
+  std::cout << "par_.use_multiple_initial_guesses = " << par_.use_multiple_initial_guesses << "\n";
   whole_traj_solver_ptr->prepareSolverForReplan(A_time, global_path, safe_corridor_polytopes_whole_, local_trajs, local_A, local_E, initial_guess_computation_time, par_.use_multiple_initial_guesses);
+
 
   // It's pushed in prepareSolverForReplan() so we get the pushed global path
   whole_traj_solver_ptr->getGlobalPath(global_path);

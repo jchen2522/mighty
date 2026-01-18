@@ -4,7 +4,7 @@
 #include <pybind11/operators.h>
 
 #include "mighty/mighty.hpp"
-#include "mighty/lbfgs_solver.hpp
+#include "mighty/lbfgs_solver.hpp"
 #include "mighty/lbfgs.hpp"
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
@@ -135,7 +135,7 @@ PYBIND11_MODULE(py_mighty, m) {
         .def("getGoalSetpoints", &lbfgs::SolverLBFGS::getGoalSetpoints)
         .def("getControlPoints", &lbfgs::SolverLBFGS::getControlPoints)
         .def("getInitialGuesses", &lbfgs::SolverLBFGS::getInitialGuesses)
-        .def("getInitialGuessWaypoints", lbfgs::SolverLBFGS::getInitialGuessWaypoints)
+        .def("getInitialGuessWaypoints", &lbfgs::SolverLBFGS::getInitialGuessWaypoints)
         .def("initializeSolver", &lbfgs::SolverLBFGS::initializeSolver)
         .def("prepareSolverForReplan",
         [](SolverLBFGS &self,

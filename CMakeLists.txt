@@ -159,6 +159,9 @@ install(PROGRAMS
 )
 
 # pybind11
+# Find Python 3 interpreter, libraries, and headers
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+
 # Ensure CMake finds the pip-installed pybind11
 list(APPEND CMAKE_PREFIX_PATH "/usr/local/lib/python3.10/dist-packages/pybind11/share/cmake/pybind11")
 find_package(pybind11 REQUIRED)
@@ -182,9 +185,14 @@ target_include_directories(py_mighty PRIVATE
     ${DECOMP_UTIL_INCLUDE_DIRS}
     ${GAZEBO_INCLUDE_DIRS}
     ${pybind11_INCLUDE_DIRS}   # <-- make sure pybind11 include is added
+    ${Python3_INCLUDE_DIRS}
 )
 
-target_link_libraries(py_mighty ${PCL_LIBRARIES})
+target_link_libraries(py_mighty  
+    ${PCL_LIBRARIES}
+    ${Python3_LIBRARIES}
+)
+
 
 ament_target_dependencies(py_mighty
   rclcpp example_interfaces dynus_interfaces visualization_msgs Eigen3

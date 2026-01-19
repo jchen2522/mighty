@@ -1,7 +1,16 @@
+import sys
+sys.path.append('/home/kkondo/code/mighty_ws/build/mighty')
 import numpy as np
-import py_mighty
+# import py_mighty
 # import yaml
 import os
+import importlib.util
+
+so_file = '/home/kkondo/code/mighty_ws/build/mighty/libpy_mighty.so'
+spec = importlib.util.spec_from_file_location("py_mighty", so_file)
+py_mighty = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(py_mighty)
+
 
 if __name__ == '__main__':
     par_ = py_mighty.parameters()
@@ -53,8 +62,8 @@ if __name__ == '__main__':
         (1.0, 0.0, 1.2),
         (2.0, 1.0, 1.5),
     ]
-    lc1 = py_mighty().LinearConstraint()
-    lc2 = py_mighty().LinearConstraint()
+    lc1 = py_mighty.LinearConstraint3D()
+    lc2 = py_mighty.LinearConstraint3D()
     safe_corridor_polytopes_whole_ = [lc1, lc2]
 
     ob1 = py_mighty.dynTraj()
@@ -71,3 +80,4 @@ if __name__ == '__main__':
     list__initial_guess_wps = whole_traj_solver_ptr.getInitialGuessWaypoints()
 
     status, zopt, fopt = whole_traj_solver_ptr.optimize(list_z0[0], lbfgs_params_)
+    print('zopt: ', zopt)

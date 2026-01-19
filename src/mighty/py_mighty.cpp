@@ -6,6 +6,7 @@
 #include "mighty/mighty.hpp"
 #include "mighty/lbfgs_solver.hpp"
 #include "mighty/lbfgs.hpp"
+#include <decomp_geometry/polyhedron.h>
 #include <pcl/point_cloud.h>
 #include <pcl/point_types.h>
 #include <geometry_msgs/msg/transform_stamped.hpp>
@@ -26,6 +27,43 @@ PYBIND11_MODULE(py_mighty, m) {
     // Bind Polyhedon<3> minimally
     py::class_<Polyhedron<3>>(m, "Polyhedron3")
         .def(py::init<>());
+
+
+    // ------------------------------
+    // Bind LinearConstraint minimally
+    py::class_<LinearConstraint3D>(m, "LinearConstraint3D")
+        .def(py::init<>());
+        // // A, b constructor: Ax < b
+        // .def(py::init([](const std::vector<std::vector<double>>& A_list,
+        //              const std::vector<double>& b_list) {
+        // // convert Python lists to Eigen
+        // MatDNf<3> A(A_list.size(), 3);
+        // VecDf b(b_list.size());
+
+        // for (size_t i = 0; i < A_list.size(); i++) {
+        //     for (size_t j = 0; j < 3; j++) {
+        //         A(i, j) = A_list[i][j];
+        //     }
+        //     b(i) = b_list[i];
+        // }
+        // return LinearConstraint3D(A, b);
+        // }))
+        // // from inside point + hyperplanes
+        // .def(py::init<const Vecf<3>, const std::vector<Hyperplane3D>&>(),
+        //      py::arg("p0"), py::arg("hyperplanes"))
+        // // from inside point + hyperplanes + polyhedron
+        // .def(py::init<const Vecf<3>, const std::vector<Hyperplane3D>&, const Polyhedron3D&>(),
+        //      py::arg("p0"), py::arg("hyperplanes"), py::arg("poly"))
+        // .def("inside", &LinearConstraint3D::inside)
+        // .def("A", &LinearConstraint3D::A)
+        // .def("b", &LinearConstraint3D::b)
+        // .def("getMeanPoint",
+        //      [](const LinearConstraint3D &self) {
+        //          Vecf<3> mean = Vecf<3>::Zero();
+        //          bool ok = self.getMeanPoint(mean);
+        //          return py::make_tuple(ok, mean);
+        //      });
+    
 
 
     // ------------------------------

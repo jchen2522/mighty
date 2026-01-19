@@ -48,12 +48,21 @@ if __name__ == '__main__':
 
     # need to fix the params for
     A_time = 0.0
-    global_path =  
-    safe_corridor_polytopes_whole_ = 
-    local_trajs = 
-    local_A = 
-    local_E = 
-    par_.use_multiple_initial_guesses = 
+    global_path = [
+        (0.0, 0.0, 1.0),
+        (1.0, 0.0, 1.2),
+        (2.0, 1.0, 1.5),
+    ]
+    lc1 = py_mighty().LinearConstraint()
+    lc2 = py_mighty().LinearConstraint()
+    safe_corridor_polytopes_whole_ = [lc1, lc2]
+
+    ob1 = py_mighty.dynTraj()
+    ob2 = py_mighty.dynTraj()
+    local_trajs = [ob1, ob2]
+    local_A = py_mighty.state()
+    local_E = py_mighty.state()
+    par_.use_multiple_initial_guesses = False
 
     initial_guess_computation_time = whole_traj_solver_ptr.prepareSolverForReplan(A_time, global_path, safe_corridor_polytopes_whole_, local_trajs, local_A, local_E, par_.use_multiple_initial_guesses)
     # whole_traj_solver_ptr.getGlobalPath(global_path)

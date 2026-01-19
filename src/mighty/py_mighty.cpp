@@ -138,7 +138,7 @@ PYBIND11_MODULE(py_mighty, m) {
         .def("getInitialGuessWaypoints", &lbfgs::SolverLBFGS::getInitialGuessWaypoints)
         .def("initializeSolver", &lbfgs::SolverLBFGS::initializeSolver)
         .def("prepareSolverForReplan",
-        [](SolverLBFGS &self,
+        [](lbfgs::SolverLBFGS &self,
             double t0,
             const std::vector<Eigen::Vector3d> &global_wps,
             const std::vector<LinearConstraint3D> &safe_corridor,

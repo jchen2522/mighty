@@ -139,25 +139,27 @@ PYBIND11_MODULE(py_mighty, m) {
         .def("initializeSolver", &lbfgs::SolverLBFGS::initializeSolver)
         .def("prepareSolverForReplan",
         [](lbfgs::SolverLBFGS &self,
-            double t0,
-            const std::vector<Eigen::Vector3d> &global_wps,
-            const std::vector<LinearConstraint3D> &safe_corridor,
-            const std::vector<std::shared_ptr<dynTraj>> &obstacles,
-            const state &initial_state,
-            const state &goal_state,
-            bool use_for_safe_path,
-            bool use_multiple_initial_guesses)
+        double t0,
+        const vec_Vec3f &global_wps,
+        const std::vector<LinearConstraint3D> &safe_corridor,
+        const std::vector<std::shared_ptr<dynTraj>> &obstacles,
+        const state &initial_state,
+        const state &goal_state,
+        bool use_for_safe_path,
+        bool use_multiple_initial_guesses)
         {
             double init_time = 0.0;
-            self.prepareSolverForReplan(t0,
-                                        global_wps,
-                                        safe_corridor,
-                                        obstacles,
-                                        initial_state,
-                                        goal_state,
-                                        init_time,
-                                        use_for_safe_path,
-                                        use_multiple_initial_guesses);
+            self.prepareSolverForReplan(
+                t0,
+                global_wps,
+                safe_corridor,
+                obstacles,
+                initial_state,
+                goal_state,
+                init_time,
+                use_for_safe_path,
+                use_multiple_initial_guesses);
+
             return init_time;
         },
         py::arg("t0"),

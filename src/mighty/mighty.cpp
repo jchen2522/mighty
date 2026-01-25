@@ -61,6 +61,45 @@ MIGHTY::MIGHTY(parameters par) : par_(par)
   lbfgs_params_.g_epsilon = par_.g_epsilon;
   lbfgs_params_.delta = par_.delta; // stop once f-improvement is minimal
 
+  // std::cout << "Planner Parameters:\n";
+  //   std::cout << "  verbose = " << planner_params_.verbose << "\n";
+  //   std::cout << "  V_max = " << planner_params_.V_max << "\n";
+  //   std::cout << "  A_max = " << planner_params_.A_max << "\n";
+  //   std::cout << "  J_max = " << planner_params_.J_max << "\n";
+  //   std::cout << "  num_perturbation = " << planner_params_.num_perturbation << "\n";
+  //   std::cout << "  r_max = " << planner_params_.r_max << "\n";
+  //   std::cout << "  time_weight = " << planner_params_.time_weight << "\n";
+  //   std::cout << "  pos_anchor_weight = " << planner_params_.pos_anchor_weight << "\n";
+  //   std::cout << "  dyn_weight = " << planner_params_.dyn_weight << "\n";
+  //   std::cout << "  stat_weight = " << planner_params_.stat_weight << "\n";
+    // std::cout << "  jerk_weight = " << planner_params_.jerk_weight << "\n";
+    // std::cout << "  dyn_constr_vel_weight = " << planner_params_.dyn_constr_vel_weight << "\n";
+    // std::cout << "  dyn_constr_acc_weight = " << planner_params_.dyn_constr_acc_weight << "\n";
+    // std::cout << "  dyn_constr_jerk_weight = " << planner_params_.dyn_constr_jerk_weight << "\n";
+    // std::cout << "  dyn_constr_bodyrate_weight = " << planner_params_.dyn_constr_bodyrate_weight << "\n";
+    // std::cout << "  dyn_constr_tilt_weight = " << planner_params_.dyn_constr_tilt_weight << "\n";
+    // std::cout << "  dyn_constr_thrust_weight = " << planner_params_.dyn_constr_thrust_weight << "\n";
+    // std::cout << "  num_dyn_obst_samples = " << planner_params_.num_dyn_obst_samples << "\n";
+    // std::cout << "  Co = " << planner_params_.Co << "\n";
+    // std::cout << "  Cw = " << planner_params_.Cw << "\n";
+    // std::cout << "  BIG = " << planner_params_.BIG << "\n";
+    // std::cout << "  dc = " << planner_params_.dc << "\n";
+    // std::cout << "  init_turn_bf = " << planner_params_.init_turn_bf << "\n";
+
+    // // L-BFGS parameters
+    // std::cout << "\nL-BFGS Parameters:\n";
+    // std::cout << "  mem_size = " << lbfgs_params_.mem_size << "\n";
+    // std::cout << "  min_step = " << lbfgs_params_.min_step << "\n";
+    // std::cout << "  f_dec_coeff = " << lbfgs_params_.f_dec_coeff << "\n";
+    // std::cout << "  cautious_factor = " << lbfgs_params_.cautious_factor << "\n";
+    // std::cout << "  past = " << lbfgs_params_.past << "\n";
+    // std::cout << "  max_linesearch = " << lbfgs_params_.max_linesearch << "\n";
+    // std::cout << "  max_iterations = " << lbfgs_params_.max_iterations << "\n";
+    // std::cout << "  g_epsilon = " << lbfgs_params_.g_epsilon << "\n";
+    // std::cout << "  delta = " << lbfgs_params_.delta << "\n";
+
+    // std::exit(0);
+
   // Set up unconstrained optimization solver for whole trajectory
   whole_traj_solver_ptr_ = std::make_shared<lbfgs::SolverLBFGS>();
   whole_traj_solver_ptr_->initializeSolver(planner_params_);
@@ -770,11 +809,67 @@ bool MIGHTY::generateLocalTrajectory(const state &local_A, double A_time,
   }
 
   // std::cout << "A_time = " << A_time << "\n";
-  std::cout << "global_path.size() = " << global_path.size() << "\n";
-  std::cout << "safe_corridor_polytopes_whole_.size() = " << safe_corridor_polytopes_whole_.size() << "\n";
-  std::cout << "local_trajs.size() = " << local_trajs.size() << "\n";
-  std::cout << "local_A.pos = " << local_A.pos.transpose() << "\n";
-  std::cout << "local_E.pos = " << local_E.pos.transpose() << "\n";
+  // std::cout << "global_path.size() = " << global_path.size() << "\n";
+  // /* ---------- global_path ---------- */
+  // for (size_t i = 0; i < std::min<size_t>(global_path.size(), 5); ++i)
+  // {
+  //   std::cout << "  global_path[" << i << "] = "
+  //             << global_path[i].transpose() << "\n";
+  // }
+  // if (global_path.size() > 5)
+  //   std::cout << "  ...\n";
+
+
+  // std::cout << "safe_corridor_polytopes_whole_.size() = " << safe_corridor_polytopes_whole_.size() << "\n";
+
+  // for (size_t i = 0;
+  //     i < std::min<size_t>(safe_corridor_polytopes_whole_.size(), 3);
+  //     ++i)
+  // {
+  //   const auto &poly = safe_corridor_polytopes_whole_[i];
+
+  //   const auto A = poly.A();   // Eigen::MatrixXd (N x 3)
+  //   const auto b = poly.b();   // Eigen::VectorXd (N)
+
+  //   std::cout << "  Polytope[" << i << "]\n";
+  //   std::cout << "    A.rows() = " << A.rows()
+  //             << ", A.cols() = " << A.cols() << "\n";
+  //   std::cout << "    b.size() = " << b.size() << "\n";
+
+  //   for (int k = 0; k < std::min<int>(A.rows(), 5); ++k)
+  //   {
+  //     std::cout << "      plane " << k << ": "
+  //               << A.row(k) << " <= "
+  //               << b(k) << "\n";
+  //   }
+
+  //   if (A.rows() > 5)
+  //     std::cout << "      ...\n";
+  // }
+
+  // std::cout << "local_A.pos = " << local_A.pos.transpose() << "\n";
+  // std::cout << "local_E.pos = " << local_E.pos.transpose() << "\n";
+  /* ---------- local trajectories ---------- */
+  for (const auto& traj_ptr : local_trajs) {
+    if (traj_ptr) {           // Only call print if the pointer is valid
+        traj_ptr->print();
+    } else {
+        std::cout << "Warning: traj_ptr is null!" << std::endl;
+    }
+  } // local_trajs is size 0, nothing stored
+
+  /* ---------- states ---------- */
+  
+  // std::cout << "A_Time= " << local_A.t << std::endl;
+  // std::cout << "A_Pos= " << local_A.pos.transpose() << std::endl;
+  // std::cout << "A_Vel= " << local_A.vel.transpose() << std::endl;
+  // std::cout << "A_Accel= " << local_A.accel.transpose() << std::endl;
+
+  // std::cout << "E_Time= " << local_E.t << std::endl;
+  // std::cout << "E_Pos= " << local_E.pos.transpose() << std::endl;
+  // std::cout << "E_Vel= " << local_E.vel.transpose() << std::endl;
+  // std::cout << "E_Accel= " << local_E.accel.transpose() << std::endl;
+  
   // std::cout << "par_.use_multiple_initial_guesses = " << par_.use_multiple_initial_guesses << "\n";
   
   whole_traj_solver_ptr->prepareSolverForReplan(A_time, global_path, safe_corridor_polytopes_whole_, local_trajs, local_A, local_E, initial_guess_computation_time, par_.use_multiple_initial_guesses);
@@ -821,6 +916,8 @@ bool MIGHTY::generateLocalTrajectory(const state &local_A, double A_time,
   {
     auto t_start = std::chrono::high_resolution_clock::now();
     status = whole_traj_solver_ptr_->optimize(list_z0[0], zopt_, fopt_, lbfgs_params_);
+    // std::cout << "zopt = " << zopt_ << std::endl;
+
     auto t_end = std::chrono::high_resolution_clock::now();
     local_traj_computation_time = std::chrono::duration<double, std::milli>(t_end - t_start).count();
     // std::cout << lbfgs::lbfgs_strerror(status) << std::endl;

@@ -1,15 +1,15 @@
 import sys
 sys.path.append('/home/kkondo/code/mighty_ws/build/mighty')
 import numpy as np
-# import py_mighty
+import py_mighty
 # import yaml
 import os
 import importlib.util
 
-so_file = '/home/kkondo/code/mighty_ws/build/mighty/libpy_mighty.so'
-spec = importlib.util.spec_from_file_location("py_mighty", so_file)
-py_mighty = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(py_mighty)
+# so_file = '/home/kkondo/code/mighty_ws/build/mighty/libpy_mighty.so'
+# spec = importlib.util.spec_from_file_location("py_mighty", so_file)
+# py_mighty = importlib.util.module_from_spec(spec)
+# spec.loader.exec_module(py_mighty)
 
 
 if __name__ == '__main__':
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     lbfgs_params_.f_dec_coeff = 0.001
     lbfgs_params_.cautious_factor = 1e-06
     lbfgs_params_.past = 3
-    lbfgs_params_.max_linesearch = par_.max_linesearch  # segfault if 32
+    lbfgs_params_.max_linesearch = 32  # segfault if 32
     lbfgs_params_.max_iterations = 1000
     lbfgs_params_.g_epsilon = 1e-05
     lbfgs_params_.delta = 1e-05

@@ -112,6 +112,53 @@ ament_target_dependencies(dynamic_forest_node
   dynus_interfaces
 )
 
+# pybind11
+# Find Python 3 interpreter, libraries, and headers
+find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+
+# Ensure CMake finds the pip-installed pybind11
+list(APPEND CMAKE_PREFIX_PATH "/usr/local/lib/python3.10/dist-packages/pybind11/share/cmake/pybind11")
+find_package(pybind11 REQUIRED)
+
+add_library(py_mighty MODULE
+    src/mighty/py_mighty.cpp
+    src/mighty/mighty.cpp
+    src/dgp/dgp_manager.cpp
+    src/dgp/utils.cpp
+    src/dgp/dgp_planner.cpp
+    src/dgp/graph_search.cpp
+    src/mighty/utils.cpp
+    src/mighty/lbfgs_solver.cpp
+    src/mighty/lbfgs_solver_utils.cpp
+)
+
+set_target_properties(py_mighty PROPERTIES
+  PREFIX ""          
+)
+
+target_include_directories(py_mighty PRIVATE
+    include
+    ${EIGEN3_INCLUDE_DIR}
+    ${PCL_INCLUDE_DIRS}
+    ${DECOMP_UTIL_INCLUDE_DIRS}
+    ${GAZEBO_INCLUDE_DIRS}
+    ${pybind11_INCLUDE_DIRS}   # <-- make sure pybind11 include is added
+    ${Python3_INCLUDE_DIRS}
+)
+
+target_link_libraries(py_mighty  
+    ${PCL_LIBRARIES}
+    ${Python3_LIBRARIES}
+    ${GAZEBO_LIBRARIES}
+)
+
+
+ament_target_dependencies(py_mighty
+  rclcpp example_interfaces dynus_interfaces visualization_msgs Eigen3
+  decomp_ros_msgs sensor_msgs std_msgs decomp_rviz_plugins
+  decomp_test_node tf2_geometry_msgs tf2 tf2_ros tf2_eigen std_srvs pcl_ros
+)
+
 # install for launch and config files
 install(DIRECTORY
 launch
@@ -158,46 +205,9 @@ install(PROGRAMS
   DESTINATION lib/${PROJECT_NAME}
 )
 
-# pybind11
-# Find Python 3 interpreter, libraries, and headers
-find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
-
-# Ensure CMake finds the pip-installed pybind11
-list(APPEND CMAKE_PREFIX_PATH "/usr/local/lib/python3.10/dist-packages/pybind11/share/cmake/pybind11")
-find_package(pybind11 REQUIRED)
-
-add_library(py_mighty MODULE
-    src/mighty/py_mighty.cpp
-    src/mighty/mighty.cpp
-    src/dgp/dgp_manager.cpp
-    src/dgp/utils.cpp
-    src/dgp/dgp_planner.cpp
-    src/dgp/graph_search.cpp
-    src/mighty/utils.cpp
-    src/mighty/lbfgs_solver.cpp
-    src/mighty/lbfgs_solver_utils.cpp
+install(TARGETS py_mighty
+  LIBRARY DESTINATION lib
 )
 
-target_include_directories(py_mighty PRIVATE
-    include
-    ${EIGEN3_INCLUDE_DIR}
-    ${PCL_INCLUDE_DIRS}
-    ${DECOMP_UTIL_INCLUDE_DIRS}
-    ${GAZEBO_INCLUDE_DIRS}
-    ${pybind11_INCLUDE_DIRS}   # <-- make sure pybind11 include is added
-    ${Python3_INCLUDE_DIRS}
-)
-
-target_link_libraries(py_mighty  
-    ${PCL_LIBRARIES}
-    ${Python3_LIBRARIES}
-)
-
-
-ament_target_dependencies(py_mighty
-  rclcpp example_interfaces dynus_interfaces visualization_msgs Eigen3
-  decomp_ros_msgs sensor_msgs std_msgs decomp_rviz_plugins
-  decomp_test_node tf2_geometry_msgs tf2 tf2_ros tf2_eigen std_srvs pcl_ros
-)
 
 ament_package()

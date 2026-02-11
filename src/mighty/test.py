@@ -6,11 +6,6 @@ import py_mighty
 import os
 import importlib.util
 
-# so_file = '/home/kkondo/code/mighty_ws/build/mighty/libpy_mighty.so'
-# spec = importlib.util.spec_from_file_location("py_mighty", so_file)
-# py_mighty = importlib.util.module_from_spec(spec)
-# spec.loader.exec_module(py_mighty)
-
 
 if __name__ == '__main__':
     par_ = py_mighty.parameters()
@@ -46,7 +41,7 @@ if __name__ == '__main__':
     lbfgs_params_.f_dec_coeff = 0.001
     lbfgs_params_.cautious_factor = 1e-06
     lbfgs_params_.past = 3
-    lbfgs_params_.max_linesearch = 32  # segfault if 32
+    lbfgs_params_.max_linesearch = 32  # segfault if 32 was bc need 4 lc for safe corridor
     lbfgs_params_.max_iterations = 1000
     lbfgs_params_.g_epsilon = 1e-05
     lbfgs_params_.delta = 1e-05
@@ -65,7 +60,9 @@ if __name__ == '__main__':
     ]
     lc1 = py_mighty.LinearConstraint3D()
     lc2 = py_mighty.LinearConstraint3D()
-    safe_corridor_polytopes_whole_ = [lc1, lc2]
+    lc3 = py_mighty.LinearConstraint3D()
+    lc4 = py_mighty.LinearConstraint3D()
+    safe_corridor_polytopes_whole_ = [lc1, lc2, lc3, lc4]
 
     ob1 = py_mighty.dynTraj()
     ob2 = py_mighty.dynTraj()

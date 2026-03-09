@@ -7,7 +7,7 @@ import os
 import importlib.util
 
 
-if __name__ == '__main__':
+def compute_trajectory():
     par_ = py_mighty.parameters()
     planner_params_ = py_mighty.planner_params_t()
     lbfgs_params_ = py_mighty.lbfgs_parameter_t()
@@ -78,7 +78,7 @@ if __name__ == '__main__':
     local_E.setPos(np.array([10.0, 2.0, 1.3]))
     local_E.setVel(np.array([0.0, 0.0, 0.0]))
     local_E.setAccel(np.array([0.0, 0.0, 0.0]))
-    local_A.setJerk(np.array([0.0, 0.0, 0.0]))
+    local_E.setJerk(np.array([0.0, 0.0, 0.0]))
 
     par_.use_multiple_initial_guesses = False
 
@@ -89,4 +89,16 @@ if __name__ == '__main__':
     list__initial_guess_wps = whole_traj_solver_ptr.getInitialGuessWaypoints()
 
     status, zopt, fopt = whole_traj_solver_ptr.optimize(list_z0[0], lbfgs_params_)
-    print('zopt: ', zopt)
+    traj = whole_traj_solver_ptr.reconstructPVATCPopt(zopt)
+    traj = whole_traj_solver_ptr.getGoalSetpoints()
+    return traj, local_A, local_E
+
+if __name__ == '__main__':
+    traj = compute_trajectory()[0]
+    for i, sp in enumerate(traj):
+        print(f"Step {i}")
+        print("t:", sp.t)
+        print("pos:", sp.pos)
+        print("vel:", sp.vel)
+        print("acc:", sp.accel)
+        print("----------------")

@@ -170,7 +170,11 @@ PYBIND11_MODULE(py_mighty, m) {
         // .def("setStaticConstraintsForSafePath", lbfgs::SolverLBFGS::setStaticConstraintsForSafePath)
         // .def("sanityCheck", lbfgs::SolverLBFGS::sanityCheck)
         .def("reconstructPVATCPopt", &lbfgs::SolverLBFGS::reconstructPVATCPopt)
-        .def("getGoalSetpoints", &lbfgs::SolverLBFGS::getGoalSetpoints)
+        .def("getGoalSetpoints", [](lbfgs::SolverLBFGS &self){
+            std::vector<state> goal_setpoints;
+            self.getGoalSetpoints(goal_setpoints);
+            return goal_setpoints;
+        })
         .def("getControlPoints", &lbfgs::SolverLBFGS::getControlPoints)
         .def("getInitialGuesses", &lbfgs::SolverLBFGS::getInitialGuesses)
         .def("getInitialGuessWaypoints", &lbfgs::SolverLBFGS::getInitialGuessWaypoints)

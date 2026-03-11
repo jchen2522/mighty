@@ -10,7 +10,15 @@ class TrajPublisher(Node):
 
     def __init__(self):
         super().__init__('traj_publisher')
-        self.dataset, self.traj_list = test.compute_trajectory()
+        # multiple segment viz
+        # self.dataset, self.traj_list = test.compute_trajectory()
+        
+        # single segment viz
+        self.traj_list = [test.model_out()] # model predicted traj
+
+        # dataset, traj_list = test.compute_trajectory()
+        # self.traj_list = [traj_list[0]]
+        
         self.traj_pub = self.create_publisher(
             Marker,
             "new_traj",
@@ -44,11 +52,18 @@ class TrajPublisher(Node):
             marker.color.b = (i % 3 == 2)*1.0
             marker.color.a = 1.0
 
+            # for pt in traj:
+            #     p = Point()
+            #     p.x = float(pt.pos[0])
+            #     p.y = float(pt.pos[1])
+            #     p.z = float(pt.pos[2])
+            #     marker.points.append(p)
+
             for pt in traj:
                 p = Point()
-                p.x = float(pt.pos[0])
-                p.y = float(pt.pos[1])
-                p.z = float(pt.pos[2])
+                p.x = float(pt[0])
+                p.y = float(pt[1])
+                p.z = float(pt[2])
                 marker.points.append(p)
 
             self.traj_pub.publish(marker)
@@ -70,7 +85,6 @@ def main():
     rclpy.spin(node)
     node.destroy_node()
     rclpy.shutdown()
-    print
 
 if __name__ == '__main__':
     main()
